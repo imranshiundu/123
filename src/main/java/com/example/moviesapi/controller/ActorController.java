@@ -1,0 +1,155 @@
+package com.example.moviesapi.controller;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.example.moviesapi.model.Actor;
+import com.example.moviesapi.model.Movie;
+import com.example.moviesapi.service.ActorService;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/api/actors")
+@CrossOrigin(origins = "*")
+public class ActorController {
+
+    private final ActorService actorService;
+
+    @Autowired
+    public ActorController(ActorService actorService) {
+        this.actorService = actorService;
+    }
+
+    // CREATE - POST /api/actors 
+    @PostMapping
+    public ResponseEntity<Actor> createActor(@Valid @RequestBody Actor actor) {
+        try {
+            Actor createdActor = actorService.createActor(actor);
+            URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdActor.getId())
+                .toUri();
+            return ResponseEntity.created(location).body(createdActor);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // READ ALL - GET /api/actors
+    @GetMapping
+    public ResponseEntity<List<Actor>> getAllActors() {
+        List<Actor> actors = actorService.getAllActors();
+        return ResponseEntity.ok(actors);
+    }
+
+    // READ BY ID - GET /api/actors/{id}
+    @GetMapping("/{id}")
+    public ResponseEntity<Actor> getActorById(@PathVariable Long id) {
+        try {
+            Actor actor = actorService.getActorById(id);
+            return ResponseEntity.ok(actor);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // UPDATE - PATCH /api/actors/{id}
+    @PatchMapping("/{id}")
+    public ResponseEntity<Actor> updateActor(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> updates) {
+        try {
+            // Remove id from updates if present to prevent ID modification
+            updates.remove("id");
+            
+            Actor updatedActor = actorService.partialUpdateActor(id, updates);
+            return ResponseEntity.ok(updatedActor);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // DELETE - DELETE /api/actors/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteActor(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "false") boolean force) {
+        try {
+            actorService.deleteActor(id, force);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // SEARCH - GET /api/actors/search?name={name}
+    @GetMapping("/search")
+    public ResponseEntity<Page<Actor>> searchActorsByName(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Actor> actors = actorService.searchActorsByName(name, pageable);
+            return ResponseEntity.ok(actors);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // GET MOVIES BY ACTOR - GET /api/actors/{id}/movies
+    @GetMapping("/{id}/movies")
+    public ResponseEntity<List<Movie>> getMoviesByActorId(@PathVariable Long id) {
+        try {
+            List<Movie> movies = actorService.getMoviesByActorId(id);
+            return ResponseEntity.ok(movies);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // PAGINATED ACTORS - GET /api/actors/paged
+    @GetMapping("/paged")
+    public ResponseEntity<Page<Actor>> getAllActorsPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            if (page < 0 || size <= 0 || size > 100) {
+                return ResponseEntity.badRequest().build();
+            }
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Actor> actors = actorService.getAllActors(pageable);
+            return ResponseEntity.ok(actors);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // CHECK IF ACTOR EXISTS - GET /api/actors/{id}/exists
+    @GetMapping("/{id}/exists")
+    public ResponseEntity<Boolean> actorExists(@PathVariable Long id) {
+        boolean exists = actorService.actorExists(id);
+        return ResponseEntity.ok(exists);
+    }
+}
