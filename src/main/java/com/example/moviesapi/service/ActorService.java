@@ -30,7 +30,6 @@ public class ActorService {
 
     // CREATE
     public Actor createActor(Actor actor) {
-        // Validate required fields
         if (actor.getName() == null || actor.getName().trim().isEmpty()) {
             throw new InvalidRequestException("Actor name is required");
         }
@@ -38,18 +37,15 @@ public class ActorService {
             throw new InvalidRequestException("Birth date is required");
         }
 
-        // Validate birth date is not in the future
         if (actor.getBirthDate().isAfter(LocalDate.now())) {
             throw new InvalidRequestException("Birth date cannot be in the future");
         }
 
-        // Check if actor with same name and birth date already exists
         if (actorRepository.existsByNameAndBirthDate(actor.getName().trim(), actor.getBirthDate())) {
             throw new InvalidRequestException("Actor with name '" + actor.getName() + 
                 "' and birth date '" + actor.getBirthDate() + "' already exists");
         }
 
-        // Ensure name is trimmed
         actor.setName(actor.getName().trim());
 
         return actorRepository.save(actor);
@@ -99,7 +95,6 @@ public class ActorService {
                     if (value != null) {
                         String newName = value.toString().trim();
                         if (!newName.isEmpty()) {
-                            // Check for duplicate name with same birth date
                             if (actorRepository.existsByNameAndBirthDate(newName, actor.getBirthDate()) && 
                                 !actor.getName().equals(newName)) {
                                 throw new InvalidRequestException("Actor with name '" + newName + 
@@ -119,7 +114,6 @@ public class ActorService {
                             if (newBirthDate.isAfter(LocalDate.now())) {
                                 throw new InvalidRequestException("Birth date cannot be in the future");
                             }
-                            // Check for duplicate name with new birth date
                             if (actorRepository.existsByNameAndBirthDate(actor.getName(), newBirthDate) && 
                                 !actor.getBirthDate().equals(newBirthDate)) {
                                 throw new InvalidRequestException("Actor with name '" + actor.getName() + 
@@ -133,7 +127,6 @@ public class ActorService {
                     break;
                     
                 default:
-                    // Ignore unknown fields for partial update
                     break;
             }
         });
@@ -154,12 +147,10 @@ public class ActorService {
             );
         }
 
-        // If force=true, remove relationships before deletion
         if (force) {
-            // Create a copy to avoid ConcurrentModificationException
             List<Movie> movies = List.copyOf(actor.getMovies());
             for (Movie movie : movies) {
-                movie.removeActor(actor);
+                actor.removeMovie(movie);
             }
         }
 

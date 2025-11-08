@@ -18,7 +18,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
     // Check if actor with same name and birth date exists
     boolean existsByNameAndBirthDate(String name, LocalDate birthDate);
     
-    // Search actors by name (case insensitive)
+    // Search actors by name (case insensitive) - REQUIRED
     Page<Actor> findByNameContainingIgnoreCase(String name, Pageable pageable);
     
     // Find actors by exact name (case insensitive)
@@ -43,5 +43,8 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
     @Query("SELECT a FROM Actor a JOIN a.movies m WHERE m.id = :movieId")
     List<Actor> findByMovieId(@Param("movieId") Long movieId);
     
-  
+    // REQUIRED: Find actors by name with pagination support
+    default Page<Actor> findByNameIgnoreCaseContaining(String name, Pageable pageable) {
+        return findByNameContainingIgnoreCase(name, pageable);
+    }
 }

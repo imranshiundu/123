@@ -73,13 +73,22 @@ public class Genre {
 
     // Helper methods for managing relationships
     public void addMovie(Movie movie) {
+        if (this.movies == null) {
+            this.movies = new HashSet<>();
+        }
         this.movies.add(movie);
-        movie.getGenres().add(this);
+        if (movie.getGenres() != null) {
+            movie.getGenres().add(this);
+        }
     }
 
     public void removeMovie(Movie movie) {
-        this.movies.remove(movie);
-        movie.getGenres().remove(this);
+        if (this.movies != null) {
+            this.movies.remove(movie);
+        }
+        if (movie.getGenres() != null) {
+            movie.getGenres().remove(this);
+        }
     }
 
     @Override

@@ -42,7 +42,7 @@ public class ActorController {
 
     // CREATE - POST /api/actors 
     @PostMapping
-    public ResponseEntity<Actor> createActor(@Valid @RequestBody Actor actor) {
+    public ResponseEntity<?> createActor(@Valid @RequestBody Actor actor) {
         try {
             Actor createdActor = actorService.createActor(actor);
             URI location = ServletUriComponentsBuilder
@@ -52,7 +52,8 @@ public class ActorController {
                 .toUri();
             return ResponseEntity.created(location).body(createdActor);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", "Failed to create actor: " + e.getMessage()));
         }
     }
 
@@ -65,84 +66,100 @@ public class ActorController {
 
     // READ BY ID - GET /api/actors/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Actor> getActorById(@PathVariable Long id) {
+    public ResponseEntity<?> getActorById(@PathVariable Long id) {
         try {
             Actor actor = actorService.getActorById(id);
             return ResponseEntity.ok(actor);
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Actor not found with id: " + id));
         }
     }
 
     // UPDATE - PATCH /api/actors/{id}
     @PatchMapping("/{id}")
-    public ResponseEntity<Actor> updateActor(
+    public ResponseEntity<?> updateActor(
             @PathVariable Long id,
             @RequestBody Map<String, Object> updates) {
         try {
-            // Remove id from updates if present to prevent ID modification
-            updates.remove("id");
+            if (updates.containsKey("id")) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("error", "ID field cannot be updated"));
+            }
             
             Actor updatedActor = actorService.partialUpdateActor(id, updates);
             return ResponseEntity.ok(updatedActor);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Failed to update actor: " + e.getMessage()));
         }
     }
 
     // DELETE - DELETE /api/actors/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteActor(
+    public ResponseEntity<?> deleteActor(
             @PathVariable Long id,
             @RequestParam(defaultValue = "false") boolean force) {
         try {
             actorService.deleteActor(id, force);
             return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Actor not found with id: " + id));
         }
     }
 
     // SEARCH - GET /api/actors/search?name={name}
     @GetMapping("/search")
-    public ResponseEntity<Page<Actor>> searchActorsByName(
+    public ResponseEntity<?> searchActorsByName(
             @RequestParam String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
+            if (page < 0 || size <= 0 || size > 100) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Invalid pagination parameters: page must be >= 0, size between 1 and 100"));
+            }
             Pageable pageable = PageRequest.of(page, size);
             Page<Actor> actors = actorService.searchActorsByName(name, pageable);
             return ResponseEntity.ok(actors);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Search failed: " + e.getMessage()));
         }
     }
 
     // GET MOVIES BY ACTOR - GET /api/actors/{id}/movies
     @GetMapping("/{id}/movies")
-    public ResponseEntity<List<Movie>> getMoviesByActorId(@PathVariable Long id) {
+    public ResponseEntity<?> getMoviesByActorId(@PathVariable Long id) {
         try {
             List<Movie> movies = actorService.getMoviesByActorId(id);
             return ResponseEntity.ok(movies);
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Actor not found with id: " + id));
         }
     }
 
     // PAGINATED ACTORS - GET /api/actors/paged
     @GetMapping("/paged")
-    public ResponseEntity<Page<Actor>> getAllActorsPaged(
+    public ResponseEntity<?> getAllActorsPaged(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
             if (page < 0 || size <= 0 || size > 100) {
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Invalid pagination parameters: page must be >= 0, size between 1 and 100"));
             }
             Pageable pageable = PageRequest.of(page, size);
             Page<Actor> actors = actorService.getAllActors(pageable);
             return ResponseEntity.ok(actors);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                .body(Map.of("error", "Failed to retrieve actors: " + e.getMessage()));
         }
     }
 

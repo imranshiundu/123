@@ -5,54 +5,54 @@ DELETE FROM actors;
 DELETE FROM genres;
 DELETE FROM movies;
 
--- Insert Genres
-INSERT INTO genres (name) VALUES ('Action');
-INSERT INTO genres (name) VALUES ('Drama');
-INSERT INTO genres (name) VALUES ('Comedy');
-INSERT INTO genres (name) VALUES ('Sci-Fi');
-INSERT INTO genres (name) VALUES ('Thriller');
-INSERT INTO genres (name) VALUES ('Horror');
-INSERT INTO genres (name) VALUES ('Romance');
-INSERT INTO genres (name) VALUES ('Adventure');
+-- Insert Genres with explicit IDs for SQLite compatibility
+INSERT INTO genres (id, name) VALUES (1, 'Action');
+INSERT INTO genres (id, name) VALUES (2, 'Drama');
+INSERT INTO genres (id, name) VALUES (3, 'Comedy');
+INSERT INTO genres (id, name) VALUES (4, 'Sci-Fi');
+INSERT INTO genres (id, name) VALUES (5, 'Thriller');
+INSERT INTO genres (id, name) VALUES (6, 'Horror');
+INSERT INTO genres (id, name) VALUES (7, 'Romance');
+INSERT INTO genres (id, name) VALUES (8, 'Adventure');
 
--- Insert Actors
-INSERT INTO actors (name, birth_date) VALUES ('Tom Hanks', '1956-07-09');
-INSERT INTO actors (name, birth_date) VALUES ('Meryl Streep', '1949-06-22');
-INSERT INTO actors (name, birth_date) VALUES ('Leonardo DiCaprio', '1974-11-11');
-INSERT INTO actors (name, birth_date) VALUES ('Jennifer Lawrence', '1990-08-15');
-INSERT INTO actors (name, birth_date) VALUES ('Denzel Washington', '1954-12-28');
-INSERT INTO actors (name, birth_date) VALUES ('Emma Watson', '1990-04-15');
-INSERT INTO actors (name, birth_date) VALUES ('Robert Downey Jr.', '1965-04-04');
-INSERT INTO actors (name, birth_date) VALUES ('Scarlett Johansson', '1984-11-22');
-INSERT INTO actors (name, birth_date) VALUES ('Brad Pitt', '1963-12-18');
-INSERT INTO actors (name, birth_date) VALUES ('Angelina Jolie', '1975-06-04');
-INSERT INTO actors (name, birth_date) VALUES ('Morgan Freeman', '1937-06-01');
-INSERT INTO actors (name, birth_date) VALUES ('Samuel L. Jackson', '1948-12-21');
-INSERT INTO actors (name, birth_date) VALUES ('Natalie Portman', '1981-06-09');
-INSERT INTO actors (name, birth_date) VALUES ('Chris Hemsworth', '1983-08-11');
-INSERT INTO actors (name, birth_date) VALUES ('Chris Evans', '1981-06-13');
+-- Insert Actors with explicit IDs for SQLite compatibility
+INSERT INTO actors (id, name, birth_date) VALUES (1, 'Tom Hanks', '1956-07-09');
+INSERT INTO actors (id, name, birth_date) VALUES (2, 'Meryl Streep', '1949-06-22');
+INSERT INTO actors (id, name, birth_date) VALUES (3, 'Leonardo DiCaprio', '1974-11-11');
+INSERT INTO actors (id, name, birth_date) VALUES (4, 'Jennifer Lawrence', '1990-08-15');
+INSERT INTO actors (id, name, birth_date) VALUES (5, 'Denzel Washington', '1954-12-28');
+INSERT INTO actors (id, name, birth_date) VALUES (6, 'Emma Watson', '1990-04-15');
+INSERT INTO actors (id, name, birth_date) VALUES (7, 'Robert Downey Jr.', '1965-04-04');
+INSERT INTO actors (id, name, birth_date) VALUES (8, 'Scarlett Johansson', '1984-11-22');
+INSERT INTO actors (id, name, birth_date) VALUES (9, 'Brad Pitt', '1963-12-18');
+INSERT INTO actors (id, name, birth_date) VALUES (10, 'Angelina Jolie', '1975-06-04');
+INSERT INTO actors (id, name, birth_date) VALUES (11, 'Morgan Freeman', '1937-06-01');
+INSERT INTO actors (id, name, birth_date) VALUES (12, 'Samuel L. Jackson', '1948-12-21');
+INSERT INTO actors (id, name, birth_date) VALUES (13, 'Natalie Portman', '1981-06-09');
+INSERT INTO actors (id, name, birth_date) VALUES (14, 'Chris Hemsworth', '1983-08-11');
+INSERT INTO actors (id, name, birth_date) VALUES (15, 'Chris Evans', '1981-06-13');
 
--- Insert Movies
-INSERT INTO movies (title, release_year, duration) VALUES ('The Shawshank Redemption', 1994, 142);
-INSERT INTO movies (title, release_year, duration) VALUES ('The Godfather', 1972, 175);
-INSERT INTO movies (title, release_year, duration) VALUES ('The Dark Knight', 2008, 152);
-INSERT INTO movies (title, release_year, duration) VALUES ('Pulp Fiction', 1994, 154);
-INSERT INTO movies (title, release_year, duration) VALUES ('Forrest Gump', 1994, 142);
-INSERT INTO movies (title, release_year, duration) VALUES ('Inception', 2010, 148);
-INSERT INTO movies (title, release_year, duration) VALUES ('The Matrix', 1999, 136);
-INSERT INTO movies (title, release_year, duration) VALUES ('Goodfellas', 1990, 146);
-INSERT INTO movies (title, release_year, duration) VALUES ('The Silence of the Lambs', 1991, 118);
-INSERT INTO movies (title, release_year, duration) VALUES ('Saving Private Ryan', 1998, 169);
-INSERT INTO movies (title, release_year, duration) VALUES ('The Avengers', 2012, 143);
-INSERT INTO movies (title, release_year, duration) VALUES ('Black Panther', 2018, 134);
-INSERT INTO movies (title, release_year, duration) VALUES ('Jurassic Park', 1993, 127);
-INSERT INTO movies (title, release_year, duration) VALUES ('Titanic', 1997, 195);
-INSERT INTO movies (title, release_year, duration) VALUES ('The Social Network', 2010, 120);
-INSERT INTO movies (title, release_year, duration) VALUES ('La La Land', 2016, 128);
-INSERT INTO movies (title, release_year, duration) VALUES ('Get Out', 2017, 104);
-INSERT INTO movies (title, release_year, duration) VALUES ('Mad Max: Fury Road', 2015, 120);
-INSERT INTO movies (title, release_year, duration) VALUES ('The Lion King', 1994, 88);
-INSERT INTO movies (title, release_year, duration) VALUES ('Spirited Away', 2001, 125);
+-- Insert Movies with explicit IDs for SQLite compatibility
+INSERT INTO movies (id, title, release_year, duration) VALUES (1, 'The Shawshank Redemption', 1994, 142);
+INSERT INTO movies (id, title, release_year, duration) VALUES (2, 'The Godfather', 1972, 175);
+INSERT INTO movies (id, title, release_year, duration) VALUES (3, 'The Dark Knight', 2008, 152);
+INSERT INTO movies (id, title, release_year, duration) VALUES (4, 'Pulp Fiction', 1994, 154);
+INSERT INTO movies (id, title, release_year, duration) VALUES (5, 'Forrest Gump', 1994, 142);
+INSERT INTO movies (id, title, release_year, duration) VALUES (6, 'Inception', 2010, 148);
+INSERT INTO movies (id, title, release_year, duration) VALUES (7, 'The Matrix', 1999, 136);
+INSERT INTO movies (id, title, release_year, duration) VALUES (8, 'Goodfellas', 1990, 146);
+INSERT INTO movies (id, title, release_year, duration) VALUES (9, 'The Silence of the Lambs', 1991, 118);
+INSERT INTO movies (id, title, release_year, duration) VALUES (10, 'Saving Private Ryan', 1998, 169);
+INSERT INTO movies (id, title, release_year, duration) VALUES (11, 'The Avengers', 2012, 143);
+INSERT INTO movies (id, title, release_year, duration) VALUES (12, 'Black Panther', 2018, 134);
+INSERT INTO movies (id, title, release_year, duration) VALUES (13, 'Jurassic Park', 1993, 127);
+INSERT INTO movies (id, title, release_year, duration) VALUES (14, 'Titanic', 1997, 195);
+INSERT INTO movies (id, title, release_year, duration) VALUES (15, 'The Social Network', 2010, 120);
+INSERT INTO movies (id, title, release_year, duration) VALUES (16, 'La La Land', 2016, 128);
+INSERT INTO movies (id, title, release_year, duration) VALUES (17, 'Get Out', 2017, 104);
+INSERT INTO movies (id, title, release_year, duration) VALUES (18, 'Mad Max: Fury Road', 2015, 120);
+INSERT INTO movies (id, title, release_year, duration) VALUES (19, 'The Lion King', 1994, 88);
+INSERT INTO movies (id, title, release_year, duration) VALUES (20, 'Spirited Away', 2001, 125);
 
 -- Insert Movie-Genre relationships
 INSERT INTO movie_genres (movie_id, genre_id) VALUES (1, 2);

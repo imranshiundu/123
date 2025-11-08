@@ -93,13 +93,22 @@ public class Actor {
 
     // Helper methods for managing relationships
     public void addMovie(Movie movie) {
+        if (this.movies == null) {
+            this.movies = new HashSet<>();
+        }
         this.movies.add(movie);
-        movie.getActors().add(this);
+        if (movie.getActors() != null) {
+            movie.getActors().add(this);
+        }
     }
 
     public void removeMovie(Movie movie) {
-        this.movies.remove(movie);
-        movie.getActors().remove(this);
+        if (this.movies != null) {
+            this.movies.remove(movie);
+        }
+        if (movie.getActors() != null) {
+            movie.getActors().remove(this);
+        }
     }
 
     @Override

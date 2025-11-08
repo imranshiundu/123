@@ -28,7 +28,6 @@ public class GenreService {
 
     // CREATE
     public Genre createGenre(Genre genre) {
-        // Check if genre with same name already exists (case-insensitive)
         if (genreRepository.existsByNameIgnoreCase(genre.getName())) {
             throw new InvalidRequestException("Genre with name '" + genre.getName() + "' already exists");
         }
@@ -60,7 +59,7 @@ public class GenreService {
     @Transactional(readOnly = true)
     public List<Movie> getMoviesByGenreId(Long genreId) {
         Genre genre = getGenreById(genreId);
-        return List.copyOf(genre.getMovies()); // Return immutable copy
+        return List.copyOf(genre.getMovies());
     }
 
     @Transactional(readOnly = true)
@@ -82,14 +81,12 @@ public class GenreService {
     public Genre updateGenre(Long id, Genre genreDetails) {
         Genre genre = getGenreById(id);
         
-        // Check if new name already exists (excluding current genre)
         if (genreDetails.getName() != null && 
             !genre.getName().equalsIgnoreCase(genreDetails.getName()) &&
             genreRepository.existsByNameIgnoreCase(genreDetails.getName())) {
             throw new InvalidRequestException("Genre with name '" + genreDetails.getName() + "' already exists");
         }
 
-        // Update fields if provided
         if (genreDetails.getName() != null) {
             genre.setName(genreDetails.getName());
         }
@@ -110,12 +107,10 @@ public class GenreService {
             );
         }
 
-        // If force=true, remove relationships before deletion
         if (force) {
-            // Create a copy to avoid ConcurrentModificationException
             List<Movie> movies = List.copyOf(genre.getMovies());
             for (Movie movie : movies) {
-                movie.removeGenre(genre);
+                genre.removeMovie(movie);
             }
         }
 
@@ -128,7 +123,6 @@ public class GenreService {
 
     // BULK OPERATIONS
     public List<Genre> createGenres(List<Genre> genres) {
-        // Check for duplicates in the request
         long distinctNames = genres.stream()
                 .map(genre -> genre.getName().toLowerCase())
                 .distinct()
@@ -138,7 +132,6 @@ public class GenreService {
             throw new InvalidRequestException("Duplicate genre names in the request");
         }
 
-        // Check for existing genres
         List<String> genreNames = genres.stream()
                 .map(Genre::getName)
                 .toList();

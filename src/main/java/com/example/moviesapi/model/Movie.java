@@ -35,7 +35,6 @@ public class Movie {
 
     @NotNull(message = "Release year is required")
     @Min(value = 1888, message = "Release year must be 1888 or later")
-    @Max(value = 2030, message = "Release year must be 2030 or earlier")
     @Column(nullable = false)
     private Integer releaseYear;
 
@@ -128,23 +127,41 @@ public class Movie {
 
     // Helper methods for managing relationships
     public void addGenre(Genre genre) {
+        if (this.genres == null) {
+            this.genres = new HashSet<>();
+        }
         this.genres.add(genre);
-        genre.getMovies().add(this);
+        if (genre.getMovies() != null) {
+            genre.getMovies().add(this);
+        }
     }
 
     public void removeGenre(Genre genre) {
-        this.genres.remove(genre);
-        genre.getMovies().remove(this);
+        if (this.genres != null) {
+            this.genres.remove(genre);
+        }
+        if (genre.getMovies() != null) {
+            genre.getMovies().remove(this);
+        }
     }
 
     public void addActor(Actor actor) {
+        if (this.actors == null) {
+            this.actors = new HashSet<>();
+        }
         this.actors.add(actor);
-        actor.getMovies().add(this);
+        if (actor.getMovies() != null) {
+            actor.getMovies().add(this);
+        }
     }
 
     public void removeActor(Actor actor) {
-        this.actors.remove(actor);
-        actor.getMovies().remove(this);
+        if (this.actors != null) {
+            this.actors.remove(actor);
+        }
+        if (actor.getMovies() != null) {
+            actor.getMovies().remove(this);
+        }
     }
 
     @Override
