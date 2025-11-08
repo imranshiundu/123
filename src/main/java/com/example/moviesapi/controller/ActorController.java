@@ -57,6 +57,7 @@ public class ActorController {
         }
     }
 
+    // KEEP ALL OTHER METHODS EXACTLY THE SAME - NO CHANGES NEEDED
     // READ ALL - GET /api/actors
     @GetMapping
     public ResponseEntity<List<Actor>> getAllActors() {

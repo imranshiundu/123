@@ -26,18 +26,17 @@ public class Actor {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "INTEGER")
     private Long id;
 
     @NotBlank(message = "Actor name is required")
     @Size(max = 255, message = "Actor name must not exceed 255 characters")
-    @Column(nullable = false, length = 255)
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
 
     @NotNull(message = "Birth date is required")
     @Past(message = "Birth date must be in the past")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(nullable = false)
+    @Column(name = "birth_date", nullable = false, columnDefinition = "VARCHAR(255)")
     private LocalDate birthDate;
 
     @ManyToMany(mappedBy = "actors", fetch = FetchType.LAZY)

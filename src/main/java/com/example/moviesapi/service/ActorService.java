@@ -28,7 +28,7 @@ public class ActorService {
         this.actorRepository = actorRepository;
     }
 
-    // CREATE
+    // CREATE - Fixed for SQLite with manual ID handling
     public Actor createActor(Actor actor) {
         if (actor.getName() == null || actor.getName().trim().isEmpty()) {
             throw new InvalidRequestException("Actor name is required");
@@ -41,6 +41,7 @@ public class ActorService {
             throw new InvalidRequestException("Birth date cannot be in the future");
         }
 
+        // Check for existing actor with same name and birth date
         if (actorRepository.existsByNameAndBirthDate(actor.getName().trim(), actor.getBirthDate())) {
             throw new InvalidRequestException("Actor with name '" + actor.getName() + 
                 "' and birth date '" + actor.getBirthDate() + "' already exists");
@@ -48,7 +49,40 @@ public class ActorService {
 
         actor.setName(actor.getName().trim());
 
+        try {
+            // Save actor - SQLite will auto-generate the ID
+            Actor savedActor = actorRepository.save(actor);
+            
+            // Force immediate flush to database
+            actorRepository.flush();
+            
+            // Return the saved actor (ID should now be populated)
+            return savedActor;
+            
+        } catch (Exception e) {
+            // If still having issues, try alternative approach
+            return createActorAlternative(actor);
+        }
+    }
+
+    // Alternative creation method for SQLite
+    private Actor createActorAlternative(Actor actor) {
+        // Get the next available ID manually
+        Long nextId = findNextAvailableId();
+        actor.setId(nextId);
+        
+        // Save with explicit ID
         return actorRepository.save(actor);
+    }
+
+    // Find next available ID for SQLite
+    private Long findNextAvailableId() {
+        // Get the maximum current ID and add 1
+        Actor lastActor = actorRepository.findTopByOrderByIdDesc();
+        if (lastActor != null && lastActor.getId() != null) {
+            return lastActor.getId() + 1;
+        }
+        return 1L; // Start with 1 if no actors exist
     }
 
     // READ ALL

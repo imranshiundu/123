@@ -25,23 +25,22 @@ public class Movie {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "INTEGER")
     private Long id;
 
     @NotBlank(message = "Movie title is required")
     @Size(max = 255, message = "Movie title must not exceed 255 characters")
-    @Column(nullable = false, length = 255)
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
 
     @NotNull(message = "Release year is required")
     @Min(value = 1888, message = "Release year must be 1888 or later")
-    @Column(nullable = false)
+    @Column(name = "release_year", nullable = false)
     private Integer releaseYear;
 
     @NotNull(message = "Duration is required")
     @Min(value = 1, message = "Duration must be at least 1 minute")
     @Max(value = 500, message = "Duration must not exceed 500 minutes")
-    @Column(nullable = false)
+    @Column(name = "duration", nullable = false)
     private Integer duration; // in minutes
 
     @ManyToMany(fetch = FetchType.LAZY)
