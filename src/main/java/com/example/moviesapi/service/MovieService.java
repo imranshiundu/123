@@ -50,10 +50,23 @@ public class MovieService {
                 (java.time.Year.now().getValue() + 1));
         }
 
+        // For SQLite, use manual ID generation
+        Long nextId = findNextAvailableId();
+        movie.setId(nextId);
+
         cacheService.remove("all_movies");
         cacheService.remove("all_movies_cached");
         
         return movieRepository.save(movie);
+    }
+
+    // Find next available ID for SQLite
+    private Long findNextAvailableId() {
+        Movie lastMovie = movieRepository.findTopByOrderByIdDesc();
+        if (lastMovie != null && lastMovie.getId() != null) {
+            return lastMovie.getId() + 1;
+        }
+        return 1L;
     }
 
     public Movie createMovieWithRelations(Movie movie, List<Long> genreIds, List<Long> actorIds) {

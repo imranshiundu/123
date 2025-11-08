@@ -31,7 +31,21 @@ public class GenreService {
         if (genreRepository.existsByNameIgnoreCase(genre.getName())) {
             throw new InvalidRequestException("Genre with name '" + genre.getName() + "' already exists");
         }
+        
+        // For SQLite, use manual ID generation
+        Long nextId = findNextAvailableId();
+        genre.setId(nextId);
+        
         return genreRepository.save(genre);
+    }
+
+    // Find next available ID for SQLite
+    private Long findNextAvailableId() {
+        Genre lastGenre = genreRepository.findTopByOrderByIdDesc();
+        if (lastGenre != null && lastGenre.getId() != null) {
+            return lastGenre.getId() + 1;
+        }
+        return 1L;
     }
 
     // READ
@@ -140,6 +154,13 @@ public class GenreService {
         if (!existingGenres.isEmpty()) {
             throw new InvalidRequestException("Some genres already exist: " + 
                 existingGenres.stream().map(Genre::getName).toList());
+        }
+
+        // Assign IDs for SQLite
+        Long nextId = findNextAvailableId();
+        for (Genre genre : genres) {
+            genre.setId(nextId);
+            nextId++;
         }
 
         return genreRepository.saveAll(genres);

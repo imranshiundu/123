@@ -28,7 +28,7 @@ public class ActorService {
         this.actorRepository = actorRepository;
     }
 
-    // CREATE - Fixed for SQLite with manual ID handling
+    // CREATE - Fixed for SQLite
     public Actor createActor(Actor actor) {
         if (actor.getName() == null || actor.getName().trim().isEmpty()) {
             throw new InvalidRequestException("Actor name is required");
@@ -49,25 +49,13 @@ public class ActorService {
 
         actor.setName(actor.getName().trim());
 
-        try {
-            // Save actor - SQLite will auto-generate the ID
-            Actor savedActor = actorRepository.save(actor);
-            
-            // Force immediate flush to database
-            actorRepository.flush();
-            
-            // Return the saved actor (ID should now be populated)
-            return savedActor;
-            
-        } catch (Exception e) {
-            // If still having issues, try alternative approach
-            return createActorAlternative(actor);
-        }
+        // For SQLite, use the alternative approach directly
+        return createActorAlternative(actor);
     }
 
     // Alternative creation method for SQLite
     private Actor createActorAlternative(Actor actor) {
-        // Get the next available ID manually
+        // Get the next available ID manually for SQLite
         Long nextId = findNextAvailableId();
         actor.setId(nextId);
         

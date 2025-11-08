@@ -29,6 +29,9 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
 
     List<Actor> findByIdIn(List<Long> ids);
     
+    // NEW METHOD: Find the actor with the highest ID
+    Actor findTopByOrderByIdDesc();
+    
     // Advanced search with multiple criteria
     @Query("SELECT a FROM Actor a WHERE " +
            "(:name IS NULL OR LOWER(a.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +

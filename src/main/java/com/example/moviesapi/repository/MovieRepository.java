@@ -118,6 +118,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT m FROM Movie m WHERE m.actors IS EMPTY")
     List<Movie> findMoviesWithNoActors();
 
+    // NEW METHOD: Find the movie with the highest ID for SQLite
+    Movie findTopByOrderByIdDesc();
+
     // REQUIRED: Alternative method names for compatibility
     default Page<Movie> findByGenres_Id(Long genreId, Pageable pageable) {
         return findByGenresId(genreId, pageable);
